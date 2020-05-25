@@ -19,7 +19,9 @@ public class Player : MonoBehaviour
     public delegate void PlayerHandler();
     public event PlayerHandler PlayerMoved;
     public event PlayerHandler PlayerNextLevel;
-
+    public GameObject Life1;
+    public GameObject Life2;
+    public GameObject Life3;
 
     //setting public variables
     public float distance = 0.32f;
@@ -27,12 +29,17 @@ public class Player : MonoBehaviour
     //setting private variables
     private bool jumping;
     private Vector2 startingPosition;
+    private int lives;
 
     // Start is called before the first frame update
     void Start()
     {
         //setting variables to their initial values
         startingPosition = transform.position;
+        lives = 3;
+        Life1.SetActive(true);
+        Life2.SetActive(true);
+        Life3.SetActive(true);
     }
 
     // Update is called once per frame
@@ -42,7 +49,43 @@ public class Player : MonoBehaviour
 
     }
 
+    //getters
+    public int getLives()
+    {
+        return lives;
+    }
 
+
+
+    //setters
+    public void setLives(int life)
+    {
+        lives = life;
+    }
+    
+
+    //method for checking lives of player
+    private void checkLives()
+    {
+        //destroy player game object if the player has no lives left and do the game over screen
+        if (lives <=0)
+        {
+            Life1.SetActive(false);
+            Destroy(gameObject);
+
+        }
+        //show 2 lives
+        else if (lives == 2)
+        {
+            Life3.SetActive(false);
+        }
+        //show one life 
+        else if (lives == 1)
+        {
+            Life3.SetActive(false);
+            Life2.SetActive(false);
+        }
+    }
     //method to check for player movement
     private void playerMovement()
     {
@@ -83,7 +126,7 @@ public class Player : MonoBehaviour
         //validate if there is a collision with an obstacle for that place. 
         hitCollider = Physics2D.OverlapCircle(aimingPosition, 0.1f);
 
-            if (hitCollider == null && attemptingMvmt ==true) {
+            if ((hitCollider == null || hitCollider.GetComponent<Enemy>() != null)&& attemptingMvmt ==true) {
                 transform.position = aimingPosition;
                 jumping = true;
                 //checking with the game controller
@@ -132,6 +175,15 @@ public class Player : MonoBehaviour
             {
                 PlayerNextLevel();
             }
+        }
+    }
+
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.GetComponent<Enemy>() != null) {
+            lives -= 1;
+            checkLives();
         }
     }
 }

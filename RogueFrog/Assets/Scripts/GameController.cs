@@ -9,6 +9,7 @@ public class GameController : MonoBehaviour
     public Player player;
     public Text LevelText;
     public Text ScoreText;
+    
 
     private int score=0;
     private int level=0;
@@ -21,7 +22,7 @@ public class GameController : MonoBehaviour
         player.PlayerMoved += PlayerMoved;
         player.PlayerNextLevel += PlayerNextLevel;
         highestPosition = player.transform.position.y;
-
+        
     }
 
     // Update is called once per frame
@@ -41,6 +42,8 @@ public class GameController : MonoBehaviour
             ScoreText.text = "Score: " + score.ToString();
             
         }
+        
+
     }
 
     void PlayerNextLevel()
